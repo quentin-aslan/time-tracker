@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn {
+    @apply p-2 border border-black bg-gray-600 text-white hover:bg-transparent cursor-pointer;
+  }
+
+  .btn-outline {
+    @apply border-black bg-transparent text-black hover:bg-gray-600 hover:text-white;
+  }
+
+  .btn-success-outline {
+    @apply border-emerald-600 bg-transparent text-emerald-600 hover:bg-emerald-600 hover:text-white;
+  }
+
+}
