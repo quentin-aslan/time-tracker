@@ -1,29 +1,26 @@
-import {TaskType} from "../mock.ts";
 import TaskLine from "./TaskLine.tsx";
+import {useContext} from "react";
+import {TasksContext} from "../tasksContext.tsx";
 
-export default function TasksTable({tasks} : {tasks: TaskType[]}) {
+export default function TasksTable() {
 
-    const handleTaskStatusUpdated = (task: TaskType) => tasks[tasks.findIndex(t => t.id === task.id)].completed = !task.completed
-
-    const completedTasks = tasks.filter(task => task.completed).map(task => <TaskLine task={task} onTaskStatusUpdated={handleTaskStatusUpdated} />)
-    const inProgressTask = tasks.filter(task => !task.completed).map(task => <TaskLine task={task} onTaskStatusUpdated={handleTaskStatusUpdated}/>)
-
+    const { getTasksCompleted, getTasksInProgress } = useContext(TasksContext)
 
     return (
         <table className={"w-full"}>
             <tbody className={"flex flex-col gap-5"}>
-            {inProgressTask}
+            {getTasksInProgress().map(task => <TaskLine task={task} />)}
 
             <tr className={'flex flex-row gap-1 justify-between border-2 hover:shadow-lg border-emerald-600 text-lg p-3'}>
                 <th className={"font-bold"}>
-                    Completed task
+                    ✅ Completed tasks
                 </th>
                 <th>
                     ⬇️ ⬇️ ⬇️
                 </th>
             </tr>
 
-            {completedTasks}
+            {getTasksCompleted().map(task => <TaskLine task={task} />)}
             </tbody>
         </table>
     )

@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 import Dashboard from "./routes/Dashboard.tsx";
 import "./index.css";
+import TasksProvider from "./tasksContext.tsx";
 
 const router = createBrowserRouter([
     {
@@ -16,6 +17,8 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
     <React.StrictMode>
-        <RouterProvider router={router} />
+        <TasksProvider>
+            <RouterProvider router={router} />
+        </TasksProvider>
     </React.StrictMode>
 );

@@ -1,8 +1,31 @@
-import {TaskType} from "../mock.ts";
-import {useState} from "react";
+import {useContext, useState} from "react";
+import {TasksContext, TaskType} from "../tasksContext.tsx";
 
-export default function TaskLine({ task, onTaskStatusUpdated }: {task: TaskType, onTaskStatusUpdated: (task: TaskType) => void}) {
-    const [buttonStatusContent, setButtonStatusContent] = useState<string>(task.completed ? 'Completed' : 'In progress')
+export default function TaskLine({ task }: {task: TaskType} ) {
+    const { getTimeSpend, updateStatusTask, startTaskTimer, stopBreakTimer, startBreakTimer,  } = useContext(TasksContext)
+
+    const [buttonStatusContent, setButtonStatusContent] = useState<string>(task.isCompleted ? 'Completed' : 'In progress')
+
+    const onClickStatus = () => {
+        // TODO : Don't forget, need to call stopBreakTimer if the task is completed
+        updateStatusTask(task)
+    }
+
+    const onClickTimeSpend = () => {
+        if(!task.isTaskStarted) {
+            startTaskTimer(task)
+            return
+        }
+
+        if (task.isTaskStarted) {
+            if ( task.isLongBreak || task.isShortBreak) {
+                stopBreakTimer(task)
+            }  else {
+                startBreakTimer(task)
+            }
+        }
+    }
+
 
     const formatTimeSpend = (timeSpendInSc: number) => {
         if (timeSpendInSc === 0) {
@@ -27,16 +50,16 @@ export default function TaskLine({ task, onTaskStatusUpdated }: {task: TaskType,
     }
 
     return (
-        <tr className={`p-3 flex flex-row gap-1 items-center justify-between border hover:shadow-lg ${task.completed ? 'border-emerald-600 text-lg' : 'border-black text-lg'} `}>
-            <th className={" w-2"}>#{task.id}</th>
+        <tr className={`p-3 flex flex-row gap-1 items-center justify-between border hover:shadow-lg ${task.isCompleted ? 'border-emerald-600 text-lg' : 'border-black text-lg'} `}>
+            <th className={"text-sm w-2 font-normal"}>#{task.id}</th>
             <td className={"w-1/4"}>{task.name}</td>
-            <td className={"w-1/4"}>{formatTimeSpend(task.timeSpend)}</td>
+            <td className={"w-1/4"} onClick={() => onClickTimeSpend()}>{getTimeSpend(task)}</td>
             <td className={"w-1/4 "}>
                 <span
-                    className={`text-sm btn ${task.completed ? 'btn-success-outline hover:btn-outline' : 'btn-outline hover:btn-success-outline'}`}
-                    onMouseEnter={() => setButtonStatusContent(task.completed ? 'Mark as in progress' : 'Mark as completed')}
-                    onMouseLeave={() => setButtonStatusContent(task.completed ? 'Completed' : 'In progress')}
-                    onClick={() => onTaskStatusUpdated(task)}
+                    className={`text-sm btn ${task.isCompleted ? 'btn-success-outline hover:btn-outline' : 'btn-outline hover:btn-success-outline'}`}
+                    onMouseEnter={() => setButtonStatusContent(task.isCompleted ? 'Mark as in progress' : 'Mark as completed')}
+                    onMouseLeave={() => setButtonStatusContent(task.isCompleted ? 'Completed' : 'In progress')}
+                    onClick={() => onClickStatus()}
                 >
                     {buttonStatusContent}
                 </span>
