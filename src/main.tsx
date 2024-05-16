@@ -15,10 +15,12 @@ const router = createBrowserRouter([
     },
 ]);
 
-ReactDOM.createRoot(document.getElementById("root")).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
         <TasksProvider>
-            <RouterProvider router={router} />
+            <div className={"h-screen max-w-screen"}>
+                <RouterProvider router={router} />
+            </div>
         </TasksProvider>
     </React.StrictMode>
 );

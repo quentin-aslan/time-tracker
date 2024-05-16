@@ -28,7 +28,7 @@ export const TasksContext = React.createContext({
     // @ts-ignore
     addTask: (name: string) => {},
     // @ts-ignore
-    getTimeSpend: (task: TaskType) => 0 as number,
+    getTimeSpendInMs: (task: TaskType) => 0 as number,
     // @ts-ignore
     startTaskTimer: (task: TaskType) => {},
     // @ts-ignore
@@ -66,7 +66,7 @@ const TasksProvider = ({ children }: { children: ReactNode }) => {
         setTasks([...tasks])
     }
 
-    const getTimeSpend = (task: TaskType): number => {
+    const getTimeSpendInMs = (task: TaskType): number => {
         if (task.isTaskStarted) {
             const startDateBreakTime = Number(task.timeSpendData?.startDateBreakTime) || 0
             const startDateTime = Number(task.timeSpendData?.startDateTime) || 0
@@ -157,7 +157,7 @@ const TasksProvider = ({ children }: { children: ReactNode }) => {
     }, [tasks]);
 
     return (
-        <TasksContext.Provider value={{ tasks, addTask, setTasks, getTasksCompleted, getTasksInProgress, getTimeSpend, startTaskTimer, startBreakTimer, updateStatusTask, stopBreakTimer }}>
+        <TasksContext.Provider value={{ tasks, addTask, setTasks, getTasksCompleted, getTasksInProgress, getTimeSpendInMs, startTaskTimer, startBreakTimer, updateStatusTask, stopBreakTimer }}>
             {children}
         </TasksContext.Provider>
     );

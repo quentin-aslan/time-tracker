@@ -17,7 +17,7 @@ The time tracking logic is primarily handled in the `TaskLine` component and the
 - **Task Start**: When a task is started for the first time, the [startTaskTimer]() function is called. This function sets the `startDateTime` to the current timestamp and marks the task as started.
 
 
-- **Task Progress**: As the task progresses, the `getTimeSpend` function calculates the time spent on the task. This function takes into account whether the task is currently in a break or not.
+- **Task Progress**: As the task progresses, the `getTimeSpendInMs` function calculates the time spent on the task. This function takes into account whether the task is currently in a break or not.
 
 
 - **Breaks**: Breaks can be started and stopped using the `startBreakTimer` and `stopBreakTimer` functions. These functions update the `startDateBreakTime`, `endDateBreakTime`, and `totalTimeBreak` fields in the timeSpendData object.

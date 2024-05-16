@@ -11,13 +11,8 @@ export default function TasksTable() {
             <tbody className={"flex flex-col gap-5"}>
             {getTasksInProgress().map(task => <TaskLine key={task.id} task={task} />)}
 
-            <tr className={'flex flex-row gap-1 justify-between border-2 hover:shadow-lg border-emerald-600 text-lg p-3'}>
-                <th className={"font-bold"}>
-                    ✅ Completed tasks
-                </th>
-                <th>
-                    ⬇️ ⬇️ ⬇️
-                </th>
+            <tr className={'flex flex-row gap-1 justify-between border-2 border-emerald-600 text-lg p-3'}>
+                <th className={"font-bold"}>✅ Completed tasks</th>
             </tr>
 
             {getTasksCompleted().map(task => <TaskLine key={task.id} task={task} />)}
