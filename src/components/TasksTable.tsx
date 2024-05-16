@@ -9,7 +9,7 @@ export default function TasksTable() {
     return (
         <table className={"w-full"}>
             <tbody className={"flex flex-col gap-5"}>
-            {getTasksInProgress().map(task => <TaskLine task={task} />)}
+            {getTasksInProgress().map(task => <TaskLine key={task.id} task={task} />)}
 
             <tr className={'flex flex-row gap-1 justify-between border-2 hover:shadow-lg border-emerald-600 text-lg p-3'}>
                 <th className={"font-bold"}>
@@ -20,7 +20,7 @@ export default function TasksTable() {
                 </th>
             </tr>
 
-            {getTasksCompleted().map(task => <TaskLine task={task} />)}
+            {getTasksCompleted().map(task => <TaskLine key={task.id} task={task} />)}
             </tbody>
         </table>
     )

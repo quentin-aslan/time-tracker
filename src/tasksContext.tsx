@@ -105,12 +105,21 @@ const TasksProvider = ({ children }: { children: ReactNode }) => {
      */
     const startBreakTimer = (task: TaskType, shortBreak?: boolean) => {
         const taskIndex = tasks.findIndex(t => t.id === task.id)
+        if(task.isShortBreak || task.isLongBreak) stopBreakTimer(task) // First, stop the current break to calculate the time spend during the break and start the new one
 
         if (shortBreak) {
             // TODO: Send notification every 15 mins
             tasks[taskIndex].isShortBreak = true
         } else {
             tasks[taskIndex].isLongBreak = true
+            if(task.isShortBreak) tasks[taskIndex].isShortBreak = false
+        }
+
+        const startDateTime = Number(task.timeSpendData?.startDateTime) || 0
+        const totalTimeBreak = Number(task.timeSpendData?.totalTimeBreak) || 0
+
+        if (task.isCompleted) {
+            tasks[taskIndex].timeSpendData.totalTimeSpend = (Date.now() - startDateTime) - totalTimeBreak
         }
 
         tasks[taskIndex].timeSpendData.startDateBreakTime = Date.now()
