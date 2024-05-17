@@ -1,6 +1,6 @@
 import React, {useState, useEffect, ReactNode} from 'react';
 import {TaskType} from "./types/Task.tsx";
-import {fetchTasks as apiFetchTasks, insertTask as apiInsertTask, updateTask as apiUpdateTask} from "./api";
+import {fetchTasks as apiFetchTasks, insertTask as apiInsertTask, updateTask as apiUpdateTask, deleteTask as apiDeleteTask} from "./api";
 export const TasksContext = React.createContext({
     tasks: [] as TaskType[],
     // @ts-expect-error task is used.
@@ -18,7 +18,9 @@ export const TasksContext = React.createContext({
     // @ts-expect-error task is used.
     updateStatusTask: (task: TaskType) => {},
     // @ts-expect-error task is used.
-    stopBreakTimer: (task: TaskType) => {}
+    stopBreakTimer: (task: TaskType) => {},
+    // @ts-expect-error task is used.
+    deleteTask: (task: TaskType) => {}
 });
 
 const TasksProvider = ({ children }: { children: ReactNode }) => {
@@ -150,6 +152,18 @@ const TasksProvider = ({ children }: { children: ReactNode }) => {
         updateTask(tasks[taskIndex])
     }
 
+    const deleteTask = async (task: TaskType) => {
+        try {
+            const taskIndex = tasks.findIndex(t => t.id === task.id)
+            tasks.splice(taskIndex, 1)
+
+            await apiDeleteTask(task)
+            setTasks([...tasks])
+        } catch (error) {
+            alert('An error occurred while deleting the task')
+        }
+    }
+
     useEffect(() => {
         const _fetchTasks = async () => {
             const tasks = await apiFetchTasks()
@@ -160,7 +174,7 @@ const TasksProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     return (
-        <TasksContext.Provider value={{ tasks, addTask, setTasks, getTasksCompleted, getTasksInProgress, getTimeSpendInMs, startTaskTimer, startBreakTimer, updateStatusTask, stopBreakTimer }}>
+        <TasksContext.Provider value={{ tasks, addTask, setTasks, getTasksCompleted, getTasksInProgress, getTimeSpendInMs, startTaskTimer, startBreakTimer, updateStatusTask, stopBreakTimer, deleteTask }}>
             {children}
         </TasksContext.Provider>
     );
