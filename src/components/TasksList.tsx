@@ -1,4 +1,4 @@
-import {FormEvent, useContext, useState} from "react";
+import {FormEvent, useContext, useEffect, useState} from "react";
 import {TasksContext} from "../tasksContext.tsx";
 import TaskLine from "./TaskLine.tsx";
 import TaskLightbox from "./TaskLightbox.tsx";
@@ -11,6 +11,8 @@ export default function TasksList() {
 
     const [isTaskLightboxOpen, setIsTaskLightboxOpen] = useState(false)
     const [taskInLightbox, setTaskInLightbox] = useState<TaskType | undefined>(undefined)
+
+    const [isCompletedTaskDisplayed, setIsCompletedTaskDisplayed] = useState(false)
 
     const openTaskLightbox = (task: TaskType) => {
         setIsTaskLightboxOpen(true)
@@ -47,6 +49,11 @@ export default function TasksList() {
         </ul>
     )
 
+    useEffect(() => {
+        const isCompletedTaskDisplayed = JSON.parse(localStorage.getItem('isCompletedTaskDisplayed') || 'false')
+        setIsCompletedTaskDisplayed(isCompletedTaskDisplayed)
+    }, [])
+
     return (
         <>
             <div className={"flex flex-col gap-5 items-center"}>
@@ -60,15 +67,26 @@ export default function TasksList() {
                     {inProgressTasksListComponent}
 
                     <div
-                        className={"flex flex-col gap-2 justify-between border-2 border-emerald-600 text-lg p-3 shadow-md shadow-emerald-600"}>
-                        <span className={"font-bold"}>✅ Completed tasks</span>
-                        <div className={"hidden sm:block"}>
+                        className={"flex flex-col gap-2 justify-between border-2 border-emerald-600 text-lg p-3 hover:shadow-md hover:shadow-emerald-600 cursor-pointer"}
+                        onClick={() => {
+                            setIsCompletedTaskDisplayed(!isCompletedTaskDisplayed)
+                            localStorage.setItem('isCompletedTaskDisplayed', JSON.stringify(!isCompletedTaskDisplayed))
+                        }}
+                    >
+                        <span className={"font-bold flex flex-col sm:flex-row justify-between sm:items-center"}>Completed tasks <span className={"text-sm text-black font-normal"}>Click to display completed task ⬇ ⬇ ⬇</span></span>
+
+                        {isCompletedTaskDisplayed && (
+                            <div className={"hidden sm:block"}>
+                                {completedTasksListComponent}
+                            </div>
+                        )}
+                    </div>
+
+                    {isCompletedTaskDisplayed && (
+                        <div className={"sm:hidden"}>
                             {completedTasksListComponent}
                         </div>
-                    </div>
-                    <div className={"sm:hidden"}>
-                        {completedTasksListComponent}
-                    </div>
+                    )}
                 </div>
 
             </div>
