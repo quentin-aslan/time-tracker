@@ -1,4 +1,4 @@
-import {useContext, useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {TasksContext} from "../tasksContext.tsx";
 import {formatTimeSpend} from "../utils.ts";
 import {TaskType} from "../types/Task.tsx";
@@ -8,7 +8,7 @@ import {
     StopIcon, TrashIcon
 } from "@heroicons/react/16/solid";
 
-export default function TaskLine({ task }: {task: TaskType} ) {
+export default function TaskLine({ task, onClick }: {task: TaskType, onClick: () => void} ) {
     const {
         getTimeSpendInMs,
         updateStatusTask,
@@ -33,23 +33,31 @@ export default function TaskLine({ task }: {task: TaskType} ) {
         startBreakTimer(task)
     }
 
-    const onClickDelete = () => {
+    const onClickDelete = (event: React.MouseEvent) => {
+        event.stopPropagation();
+
         if(confirm('Are you sure you want to delete this task?')) {
             deleteTask(task)
         }
     }
 
-    const startShortBreak = () => {
+    const startShortBreak = (event: React.MouseEvent) => {
+        event.stopPropagation();
+
         clearInterval(localTimer)
         startBreakTimer(task, true)
     }
 
-    const startLongBreak = () => {
+    const startLongBreak = (event: React.MouseEvent) => {
+        event.stopPropagation();
+
         clearInterval(localTimer)
         startBreakTimer(task, false)
     }
 
-    const startTask = () => {
+    const startTask = (event: React.MouseEvent) => {
+        event.stopPropagation();
+
         if (!task.isTaskStarted) {
             startLocalTimer()
             startTaskTimer(task)
@@ -66,7 +74,9 @@ export default function TaskLine({ task }: {task: TaskType} ) {
 
     return (
         <li
-            className={`p-3 flex flex-row gap-1 items-center justify-between border hover:shadow ${task.isCompleted ? 'border-emerald-600 hover:shadow-emerald-600' : task.isShortBreak ? 'border-orange-600' : 'border-black'} md:text-lg ${!task.isLongBreak && task.isTaskStarted ? 'animate-pulse' : ''}`}>
+            className={`p-3 flex flex-row gap-1 items-center justify-between border hover:shadow ${task.isCompleted ? 'border-emerald-600 hover:shadow-emerald-600' : task.isShortBreak ? 'border-orange-600' : 'border-black'} md:text-lg ${!task.isLongBreak && task.isTaskStarted ? 'animate-pulse' : ''} cursor-pointer`}
+            onClick={() => onClick()}
+        >
             <span className={"w-5 pt-0.5"}>
                 {task.isCompleted ? (
                     <input
@@ -74,6 +84,7 @@ export default function TaskLine({ task }: {task: TaskType} ) {
                         type="checkbox"
                         checked={task.isCompleted}
                         onChange={onClickStatus}
+                        onClick={(event) => event.stopPropagation()}
                     />
                 ) : (
                     <input
@@ -81,6 +92,7 @@ export default function TaskLine({ task }: {task: TaskType} ) {
                         type="checkbox"
                         checked={task.isCompleted}
                         onChange={onClickStatus}
+                        onClick={(event) => event.stopPropagation()}
                     />
                 )}
 
@@ -95,7 +107,7 @@ export default function TaskLine({ task }: {task: TaskType} ) {
                         {isBreak || !task.isTaskStarted ? (
                             <span
                                 className={"flex flex-row gap-1 items-center p-2 border border-emerald-600 hover:shadow hover:shadow-emerald-600 text-emerald-600 hover:text-white text-sm bg-transparent hover:bg-emerald-600 cursor-pointer"}
-                                onClick={() => startTask()}>
+                                onClick={startTask}>
                                 Play
                                 <PlayIcon className="size-4"/>
                             </span>
@@ -103,7 +115,7 @@ export default function TaskLine({ task }: {task: TaskType} ) {
                         ) : (
                             <span
                                 className={"flex flex-row gap-1 items-center p-2 border border-orange-600 hover:shadow hover:shadow-orange-600 text-orange-600 hover:text-white text-sm bg-transparent hover:bg-orange-600 cursor-pointer"}
-                                onClick={() => startShortBreak()}>
+                                onClick={startShortBreak}>
                                 Pause
                                 <PauseIcon className="size-4"/>
                             </span>
@@ -111,7 +123,7 @@ export default function TaskLine({ task }: {task: TaskType} ) {
                         }
                         <span
                             className={"flex flex-row gap-1 items-center p-2 border border-black text-black hover:text-white text-sm bg-transparent hover:bg-gray-600 cursor-pointer"}
-                            onClick={() => startLongBreak()}>
+                            onClick={startLongBreak}>
                             Stop
                             <StopIcon className="size-4"/>
                         </span>
@@ -119,7 +131,7 @@ export default function TaskLine({ task }: {task: TaskType} ) {
                 )}
                 <span
                     className={"flex flex-row gap-1 items-center p-2 text-red-600 hover:text-white text-sm bg-transparent hover:bg-red-500 cursor-pointer"}
-                    onClick={() => onClickDelete()}>
+                    onClick={onClickDelete}>
                             <TrashIcon className="size-5"/>
                         </span>
             </span>

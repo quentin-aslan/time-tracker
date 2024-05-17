@@ -123,7 +123,9 @@ const TasksProvider = ({ children }: { children: ReactNode }) => {
         const totalTimeBreak = Number(task.totalTimeBreak) || 0
 
         if (task.isCompleted) {
-            tasks[taskIndex].totalTimeSpend = (Date.now() - startDateTime) - totalTimeBreak
+            const endDateTime = Number(Date.now()) || 0
+            tasks[taskIndex].endDateTime = endDateTime
+            tasks[taskIndex].totalTimeSpend = (endDateTime - startDateTime) - totalTimeBreak
         }
 
         tasks[taskIndex].startDateBreakTime = Date.now()
