@@ -27,7 +27,7 @@ jobs:
           script: |
             cd ~/app/time-tracker
             git pull origin main
-            docker stop time-tracker || true
-            docker rm time-tracker || true
-            docker build -t time-tracker .
-            docker run -d -p 3050:3050 --name time-tracker --restart always time-tracker
+            sudo docker stop time-tracker || true
+            sudo docker rm time-tracker || true
+            sudo docker build -t time-tracker .
+            sudo docker run -d -p 3050:3050 --name time-tracker --restart always time-tracker
