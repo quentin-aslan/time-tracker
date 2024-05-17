@@ -41,3 +41,17 @@ export const updateTask = async (task: TaskType) => {
 
     return data;
 }
+
+export const deleteTask = async (task: TaskType) => {
+    const { data, error } = await supabase
+        .from('tasks')
+        .delete()
+        .match({ id: task.id })
+
+    if (error) {
+        console.error(error)
+        throw error
+    }
+
+    return data;
+}
