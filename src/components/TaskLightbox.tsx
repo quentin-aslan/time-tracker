@@ -33,7 +33,13 @@ export default function TaskLightbox({ isVisible, onClose, task }: { isVisible: 
         return "Not started yet"
     }
 
-    const endDateTime = task && task.endDateTime ? new Date(task.endDateTime).toDateString() : "Not ended yet"
+    const endDateTimeFormatted = () => {
+        if (task && task.endDateTime) {
+            const date = new Date(task.endDateTime)
+            return `${date.toDateString()} ${date.toLocaleTimeString()}`
+        }
+        return "Not ended yet"
+    }
     return (
         <>
             <Transition appear show={isVisible}>
@@ -59,7 +65,7 @@ export default function TaskLightbox({ isVisible, onClose, task }: { isVisible: 
                                         </li>
                                         <li className={"flex flex-row gap-2"}>
                                             <span className={"font-bold"}>End Date Time:</span>
-                                            <span>{endDateTime}</span>
+                                            <span>{endDateTimeFormatted()}</span>
                                         </li>
                                     </ul>
                                     <div className="flex justify-end gap-2 mt-4">
