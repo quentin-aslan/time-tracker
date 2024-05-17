@@ -8,7 +8,7 @@ import {
     StopIcon, TrashIcon
 } from "@heroicons/react/16/solid";
 
-export default function TaskLine({ task }: {task: TaskType} ) {
+export default function TaskLine({ task, onClick }: {task: TaskType, onClick: () => void} ) {
     const {
         getTimeSpendInMs,
         updateStatusTask,
@@ -66,7 +66,9 @@ export default function TaskLine({ task }: {task: TaskType} ) {
 
     return (
         <li
-            className={`p-3 flex flex-row gap-1 items-center justify-between border hover:shadow ${task.isCompleted ? 'border-emerald-600 hover:shadow-emerald-600' : task.isShortBreak ? 'border-orange-600' : 'border-black'} md:text-lg ${!task.isLongBreak && task.isTaskStarted ? 'animate-pulse' : ''}`}>
+            className={`p-3 flex flex-row gap-1 items-center justify-between border hover:shadow ${task.isCompleted ? 'border-emerald-600 hover:shadow-emerald-600' : task.isShortBreak ? 'border-orange-600' : 'border-black'} md:text-lg ${!task.isLongBreak && task.isTaskStarted ? 'animate-pulse' : ''} cursor-pointer`}
+            onClick={() => onClick()}
+        >
             <span className={"w-5 pt-0.5"}>
                 {task.isCompleted ? (
                     <input
