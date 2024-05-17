@@ -1,13 +1,14 @@
 import {useContext, useEffect, useState} from "react";
-import {TasksContext, TaskType} from "../tasksContext.tsx";
+import {TasksContext} from "../tasksContext.tsx";
 import {formatTimeSpend} from "../utils.ts";
+import {TaskType} from "../types/Task.tsx";
 
 export default function TaskLine({ task }: {task: TaskType} ) {
     const { getTimeSpendInMs, updateStatusTask, startTaskTimer, stopBreakTimer, startBreakTimer } = useContext(TasksContext)
 
     const [buttonStatusContent, setButtonStatusContent] = useState<string>(task.isCompleted ? 'Completed' : 'In progress')
     const [localTimeSpend, setLocalTimeSpend] = useState<number>(0)
-    const [localTimer, setLocalTimer] = useState<any>(undefined)
+    const [localTimer, setLocalTimer] = useState<NodeJS.Timeout | undefined>(undefined)
 
     const startLocalTimer = () => {
         setLocalTimer(setInterval(() => setLocalTimeSpend(getTimeSpendInMs(task)), 1000))

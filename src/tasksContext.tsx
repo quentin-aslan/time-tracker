@@ -1,41 +1,23 @@
 import React, {useState, useEffect, ReactNode} from 'react';
-import {TASKS} from "./mock.ts";
-
-export type TaskType = {
-    id: number;
-    name: string;
-    isCompleted: boolean;
-    timeSpendData: {
-        totalTimeSpend?: number; // (endDateTime - startDateTime) - totalTimeBreak in milliseconds
-        startDateTime?: number; // Date.now() when task started
-        endDateTime?: number; // Date.now() when task ended
-
-        totalTimeBreak?: number; // (endDateBreakTime - startDateBreakTime) in milliseconds
-        startDateBreakTime?: number; // Date.now() when break started
-        endDateBreakTime?: number; // Date.now() when break ended
-    },
-    isTaskStarted?: boolean;
-    isShortBreak?: boolean;
-    isLongBreak?: boolean;
-}
-
+import {TaskType} from "./types/Task.tsx";
+import {fetchTasks as apiFetchTasks, insertTask as apiInsertTask, updateTask as apiUpdateTask} from "./api";
 export const TasksContext = React.createContext({
     tasks: [] as TaskType[],
-    // @ts-ignore
+    // @ts-expect-error task is used.
     setTasks: (tasks: TaskType[]) => {},
     getTasksCompleted: () => [] as TaskType[],
     getTasksInProgress: () => [] as TaskType[],
-    // @ts-ignore
+    // @ts-expect-error name is used.
     addTask: (name: string) => {},
-    // @ts-ignore
+    // @ts-expect-error task is used.
     getTimeSpendInMs: (task: TaskType) => 0 as number,
-    // @ts-ignore
+    // @ts-expect-error task is used.
     startTaskTimer: (task: TaskType) => {},
-    // @ts-ignore
+    // @ts-expect-error task and shortBreak is used.
     startBreakTimer: (task: TaskType, shortBreak?: boolean) => {},
-    // @ts-ignore
+    // @ts-expect-error task is used.
     updateStatusTask: (task: TaskType) => {},
-// @ts-ignore
+    // @ts-expect-error task is used.
     stopBreakTimer: (task: TaskType) => {}
 });
 
@@ -45,33 +27,52 @@ const TasksProvider = ({ children }: { children: ReactNode }) => {
     const getTasksCompleted = () => tasks.filter(task => task.isCompleted);
     const getTasksInProgress = () => tasks.filter(task => !task.isCompleted);
 
-    const addTask = (name: string) => {
-        const task: TaskType = {
-            id: tasks.length + 1,
-            name,
-            isCompleted: false,
-            timeSpendData: { },
-            isTaskStarted: false,
-            isShortBreak: false,
-            isLongBreak: false
+    const addTask = async (name: string) => {
+        try {
+            const task: TaskType = {
+                id: tasks.length + 1,
+                name,
+                isCompleted: false,
+                isTaskStarted: false,
+                isShortBreak: false,
+                isLongBreak: false
+            }
+
+            await apiInsertTask(task)
+
+            setTasks([...tasks, task])
+        } catch (error) {
+            alert('An error occurred while adding the task')
         }
+    }
 
-
-        setTasks([...tasks, task])
+    const updateTask = async (task: TaskType) => {
+        try {
+            const taskIndex = tasks.findIndex(t => t.id === task.id)
+            await apiUpdateTask(tasks[taskIndex])
+            setTasks([...tasks])
+        } catch (error) {
+            alert('An error occurred while updating the task')
+        }
     }
 
     const updateStatusTask = (task: TaskType) => {
-        const taskIndex = tasks.findIndex(t => t.id === task.id)
-        tasks[taskIndex].isCompleted = !task.isCompleted
-        setTasks([...tasks])
+        try {
+            const taskIndex = tasks.findIndex(t => t.id === task.id)
+            tasks[taskIndex].isCompleted = !task.isCompleted
+
+            updateTask(tasks[taskIndex])
+        } catch (error) {
+            alert('An error occurred while updating the task')
+        }
     }
 
     const getTimeSpendInMs = (task: TaskType): number => {
         if (task.isTaskStarted) {
-            const startDateBreakTime = Number(task.timeSpendData?.startDateBreakTime) || 0
-            const startDateTime = Number(task.timeSpendData?.startDateTime) || 0
-            const totalTimeBreak = Number(task.timeSpendData?.totalTimeBreak) || 0
-            const totalTimeSpend = Number(task.timeSpendData?.totalTimeSpend) || 0
+            const startDateBreakTime = Number(task.startDateBreakTime) || 0
+            const startDateTime = Number(task.startDateTime) || 0
+            const totalTimeBreak = Number(task.totalTimeBreak) || 0
+            const totalTimeSpend = Number(task.totalTimeSpend) || 0
 
 
             if (task.isCompleted) {
@@ -94,8 +95,9 @@ const TasksProvider = ({ children }: { children: ReactNode }) => {
 
         const taskIndex = tasks.findIndex(t => t.id === task.id)
         tasks[taskIndex].isTaskStarted = true
-        tasks[taskIndex].timeSpendData = { startDateTime: Date.now() }
-        setTasks([...tasks])
+        tasks[taskIndex].startDateTime = Date.now()
+
+        updateTask(tasks[taskIndex])
     }
 
     /*
@@ -115,15 +117,15 @@ const TasksProvider = ({ children }: { children: ReactNode }) => {
             if(task.isShortBreak) tasks[taskIndex].isShortBreak = false
         }
 
-        const startDateTime = Number(task.timeSpendData?.startDateTime) || 0
-        const totalTimeBreak = Number(task.timeSpendData?.totalTimeBreak) || 0
+        const startDateTime = Number(task.startDateTime) || 0
+        const totalTimeBreak = Number(task.totalTimeBreak) || 0
 
         if (task.isCompleted) {
-            tasks[taskIndex].timeSpendData.totalTimeSpend = (Date.now() - startDateTime) - totalTimeBreak
+            tasks[taskIndex].totalTimeSpend = (Date.now() - startDateTime) - totalTimeBreak
         }
 
-        tasks[taskIndex].timeSpendData.startDateBreakTime = Date.now()
-        setTasks([...tasks])
+        tasks[taskIndex].startDateBreakTime = Date.now()
+        updateTask(tasks[taskIndex])
     }
 
     /*
@@ -135,26 +137,27 @@ const TasksProvider = ({ children }: { children: ReactNode }) => {
         const taskIndex = tasks.findIndex(t => t.id === task.id)
         tasks[taskIndex].isShortBreak = false
         tasks[taskIndex].isLongBreak = false
-        tasks[taskIndex].timeSpendData.endDateBreakTime = Date.now()
+        tasks[taskIndex].endDateBreakTime = Date.now()
 
-        const totalTimeBreak = Number(tasks[taskIndex].timeSpendData.totalTimeBreak) || 0
-        const endDateBreakTime = Number(tasks[taskIndex].timeSpendData.endDateBreakTime) || 0
-        const startDateBreakTime = Number(tasks[taskIndex].timeSpendData.startDateBreakTime) || 0
+        const totalTimeBreak = Number(tasks[taskIndex].totalTimeBreak) || 0
+        const endDateBreakTime = Number(tasks[taskIndex].endDateBreakTime) || 0
+        const startDateBreakTime = Number(tasks[taskIndex].startDateBreakTime) || 0
 
-        tasks[taskIndex].timeSpendData.totalTimeBreak = totalTimeBreak + (endDateBreakTime - startDateBreakTime)
+        tasks[taskIndex].totalTimeBreak = totalTimeBreak + (endDateBreakTime - startDateBreakTime)
 
-        tasks[taskIndex].timeSpendData.startDateBreakTime = undefined
-        tasks[taskIndex].timeSpendData.endDateBreakTime = undefined
-        setTasks([...tasks])
+        tasks[taskIndex].startDateBreakTime = undefined
+        tasks[taskIndex].endDateBreakTime = undefined
+        updateTask(tasks[taskIndex])
     }
 
     useEffect(() => {
-        setTasks(TASKS)
-    }, []);
+        const _fetchTasks = async () => {
+            const tasks = await apiFetchTasks()
+            setTasks(tasks)
+        }
 
-    useEffect(() => {
-        console.log(tasks)
-    }, [tasks]);
+        _fetchTasks()
+    }, []);
 
     return (
         <TasksContext.Provider value={{ tasks, addTask, setTasks, getTasksCompleted, getTasksInProgress, getTimeSpendInMs, startTaskTimer, startBreakTimer, updateStatusTask, stopBreakTimer }}>

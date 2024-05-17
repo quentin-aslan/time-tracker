@@ -3,7 +3,6 @@ import {useContext} from "react";
 import {TasksContext} from "../tasksContext.tsx";
 
 export default function TasksTable() {
-
     const { getTasksCompleted, getTasksInProgress } = useContext(TasksContext)
 
     return (
