@@ -3,6 +3,7 @@ import {TasksContext} from "../tasksContext.tsx";
 import TaskLine from "./TaskLine.tsx";
 import TaskLightbox from "./TaskLightbox.tsx";
 import {TaskType} from "../types/Task.tsx";
+import TaskParentLine from "./TaskParentLine.tsx";
 
 export default function TasksList() {
     const { addTask, getTasksCompleted, getTasksInProgress  } = useContext(TasksContext)
@@ -27,25 +28,55 @@ export default function TasksList() {
 
     const completedTasksListComponent = (
         <ul className={"flex flex-col gap-2"}>
-            {getTasksCompleted().map(task =>
-                <TaskLine
-                    key={task.id}
-                    task={task}
-                    onClick={() => openTaskLightbox(task)}
-                />
-            )}
+            {getTasksCompleted().filter(task => !task.parentTask || task.parentTask === 0).map(task => {
+                const childs = getTasksInProgress().filter(t => t.parentTask === task.id)
+                if (childs.length > 0) {
+                    return (
+                        <TaskParentLine
+                            key={task.id}
+                            task={task}
+                            onClick={(t) => openTaskLightbox(t)}
+                            childs={childs}
+                        />
+                    )
+                }
+
+                return (
+                    <TaskLine
+                        key={task.id}
+                        task={task}
+                        onClick={() => openTaskLightbox(task)}
+                    />
+                )
+
+            })}
         </ul>
     )
 
     const inProgressTasksListComponent = (
         <ul className={"flex flex-col gap-2"}>
-            {getTasksInProgress().map(task =>
-                <TaskLine
-                    key={task.id}
-                    task={task}
-                    onClick={() => openTaskLightbox(task)}
-                />
-            )}
+            {getTasksInProgress().filter(task => !task.parentTask || task.parentTask === 0).map(task => {
+                const childs = getTasksInProgress().filter(t => t.parentTask === task.id)
+                if (childs.length > 0) {
+                    return (
+                        <TaskParentLine
+                            key={task.id}
+                            task={task}
+                            onClick={(t) => openTaskLightbox(t)}
+                            childs={childs}
+                        />
+                    )
+                }
+
+                return (
+                    <TaskLine
+                        key={task.id}
+                        task={task}
+                        onClick={() => openTaskLightbox(task)}
+                    />
+                )
+
+            })}
         </ul>
     )
 
@@ -67,7 +98,7 @@ export default function TasksList() {
                     {inProgressTasksListComponent}
 
                     <div
-                        className={"flex flex-col gap-2 justify-between border-2 border-emerald-600 text-lg p-3 hover:shadow-md hover:shadow-emerald-600 cursor-pointer"}
+                        className={"flex flex-col gap-2 justify-between bg-emerald-100 border-2 border-emerald-600 text-lg p-3 hover:shadow-md hover:shadow-emerald-600 cursor-pointer"}
                         onClick={() => {
                             setIsCompletedTaskDisplayed(!isCompletedTaskDisplayed)
                             localStorage.setItem('isCompletedTaskDisplayed', JSON.stringify(!isCompletedTaskDisplayed))
@@ -76,21 +107,22 @@ export default function TasksList() {
                         <span className={"font-bold flex flex-col sm:flex-row justify-between sm:items-center"}>Completed tasks <span className={"text-sm text-black font-normal"}>Click to display completed task ⬇ ⬇ ⬇</span></span>
 
                         {isCompletedTaskDisplayed && (
-                            <div className={"hidden sm:block"}>
+                            <div onClick={(event) => event.stopPropagation()} className={"hidden sm:block"}>
                                 {completedTasksListComponent}
                             </div>
                         )}
                     </div>
 
                     {isCompletedTaskDisplayed && (
-                        <div className={"sm:hidden"}>
+                        <div onClick={(event) => event.stopPropagation()} className={"sm:hidden"}>
                             {completedTasksListComponent}
                         </div>
                     )}
                 </div>
 
             </div>
-            <TaskLightbox isVisible={isTaskLightboxOpen} task={taskInLightbox} onClose={() => setIsTaskLightboxOpen(false)} />
+            {isTaskLightboxOpen && <TaskLightbox isVisible={isTaskLightboxOpen} task={taskInLightbox} onClose={() => setIsTaskLightboxOpen(false)} /> }
+
         </>
     )
 }

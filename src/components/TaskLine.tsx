@@ -8,7 +8,7 @@ import {
     StopIcon, TrashIcon
 } from "@heroicons/react/16/solid";
 
-export default function TaskLine({ task, onClick }: {task: TaskType, onClick: () => void} ) {
+export default function TaskLine({ task, onClick }: {task: TaskType, onClick: (task: TaskType) => void} ) {
     const {
         getTimeSpendInMs,
         updateStatusTask,
@@ -74,8 +74,8 @@ export default function TaskLine({ task, onClick }: {task: TaskType, onClick: ()
 
     return (
         <li
-            className={`p-3 flex flex-row gap-1 items-center justify-between border hover:shadow ${task.isCompleted ? 'border-emerald-600 hover:shadow-emerald-600' : task.isShortBreak ? 'border-orange-600' : 'border-black'} md:text-lg ${!task.isLongBreak && task.isTaskStarted ? 'animate-pulse' : ''} cursor-pointer`}
-            onClick={() => onClick()}
+            className={`bg-gray-50 p-3 flex flex-row gap-1 items-center justify-between border hover:shadow ${task.isCompleted ? 'border-emerald-600 hover:shadow-emerald-600' : task.isShortBreak ? 'border-orange-600' : 'border-black'} md:text-lg ${!task.isLongBreak && task.isTaskStarted ? 'animate-pulse' : ''} cursor-pointer text-black`}
+            onClick={() => onClick(task)}
         >
             <span className={"w-5 pt-0.5"}>
                 {task.isCompleted ? (
@@ -98,8 +98,7 @@ export default function TaskLine({ task, onClick }: {task: TaskType, onClick: ()
 
 
             </span>
-            <span
-                className={`${task.isCompleted ? 'w-2/3' : 'w-1/5'} overflow-hidden text-overflow-ellipsis whitespace-nowrap`}>{task.name}</span>
+            <span className={`${task.isCompleted ? 'w-2/3' : 'w-1/5'} overflow-hidden text-overflow-ellipsis whitespace-nowrap`}>{task.name}</span>
             <span className={`w-1/5`}>{formatTimeSpend(localTimeSpend)}</span>
             <span className={"ml-auto flex flex-row gap-2 items-center"}>
                 {!task.isCompleted && (

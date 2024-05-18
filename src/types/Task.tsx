@@ -15,4 +15,5 @@ export type TaskType = {
     isTaskStarted?: boolean;
     isShortBreak?: boolean;
     isLongBreak?: boolean;
+    parentTask?: number;
 }

@@ -15,11 +15,12 @@ export type Database = {
           endDateBreakTime: number | null
           endDateTime: number | null
           id: number
-          isCompleted: boolean | null
+          isCompleted: boolean
           isLongBreak: boolean | null
           isShortBreak: boolean | null
           isTaskStarted: boolean | null
-          name: string | null
+          name: string
+          parentTask: number | null
           startDateBreakTime: number | null
           startDateTime: number | null
           totalTimeBreak: number | null
@@ -30,11 +31,12 @@ export type Database = {
           endDateBreakTime?: number | null
           endDateTime?: number | null
           id?: number
-          isCompleted?: boolean | null
+          isCompleted?: boolean
           isLongBreak?: boolean | null
           isShortBreak?: boolean | null
           isTaskStarted?: boolean | null
-          name?: string | null
+          name: string
+          parentTask?: number | null
           startDateBreakTime?: number | null
           startDateTime?: number | null
           totalTimeBreak?: number | null
@@ -45,11 +47,12 @@ export type Database = {
           endDateBreakTime?: number | null
           endDateTime?: number | null
           id?: number
-          isCompleted?: boolean | null
+          isCompleted?: boolean
           isLongBreak?: boolean | null
           isShortBreak?: boolean | null
           isTaskStarted?: boolean | null
-          name?: string | null
+          name?: string
+          parentTask?: number | null
           startDateBreakTime?: number | null
           startDateTime?: number | null
           totalTimeBreak?: number | null
