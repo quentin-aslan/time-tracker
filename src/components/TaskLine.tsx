@@ -8,7 +8,7 @@ import {
     StopIcon, TrashIcon
 } from "@heroicons/react/16/solid";
 
-export default function TaskLine({ task, onClick }: {task: TaskType, onClick: () => void} ) {
+export default function TaskLine({ task, onClick }: {task: TaskType, onClick: (task: TaskType) => void} ) {
     const {
         getTimeSpendInMs,
         updateStatusTask,
@@ -73,10 +73,11 @@ export default function TaskLine({ task, onClick }: {task: TaskType, onClick: ()
     }, []);
 
     return (
-        <li
-            className={`p-3 flex flex-row gap-1 items-center justify-between border hover:shadow ${task.isCompleted ? 'border-emerald-600 hover:shadow-emerald-600' : task.isShortBreak ? 'border-orange-600' : 'border-black'} md:text-lg ${!task.isLongBreak && task.isTaskStarted ? 'animate-pulse' : ''} cursor-pointer`}
-            onClick={() => onClick()}
-        >
+        <>
+            <li
+                className={`hidden sm:flex flex-row gap-1 items-center justify-between bg-gray-50 p-3 border hover:shadow ${task.isCompleted ? 'border-emerald-600 hover:shadow-emerald-600' : task.isShortBreak ? 'border-orange-600' : 'border-black'} text-lg ${task.isShortBreak ? 'animate-pulse' : ''} cursor-pointer text-black`}
+                onClick={() => onClick(task)}
+            >
             <span className={"w-5 pt-0.5"}>
                 {task.isCompleted ? (
                     <input
@@ -98,43 +99,108 @@ export default function TaskLine({ task, onClick }: {task: TaskType, onClick: ()
 
 
             </span>
-            <span
-                className={`${task.isCompleted ? 'w-2/3' : 'w-1/5'} overflow-hidden text-overflow-ellipsis whitespace-nowrap`}>{task.name}</span>
-            <span className={`w-1/5`}>{formatTimeSpend(localTimeSpend)}</span>
-            <span className={"ml-auto flex flex-row gap-2 items-center"}>
+                <span
+                    className={`${task.isCompleted ? 'w-2/3' : 'w-1/5'} overflow-hidden text-overflow-ellipsis whitespace-nowrap`}>{task.name}</span>
+                <span className={`w-1/5`}>{formatTimeSpend(localTimeSpend)}</span>
+                <span className={"ml-auto flex flex-row gap-2 items-center"}>
                 {!task.isCompleted && (
                     <>
                         {isBreak || !task.isTaskStarted ? (
                             <span
-                                className={"flex flex-row gap-1 items-center p-2 border border-emerald-600 hover:shadow hover:shadow-emerald-600 text-emerald-600 hover:text-white text-sm bg-transparent hover:bg-emerald-600 cursor-pointer"}
+                                className={"flex flex-row gap-1 items-center p-2 border border-emerald-600 hover:shadow hover:shadow-emerald-600 text-emerald-600 hover:text-white text-md bg-transparent hover:bg-emerald-600 cursor-pointer"}
                                 onClick={startTask}>
                                 Play
-                                <PlayIcon className="size-4"/>
+                                <PlayIcon className="size-5"/>
                             </span>
 
                         ) : (
                             <span
-                                className={"flex flex-row gap-1 items-center p-2 border border-orange-600 hover:shadow hover:shadow-orange-600 text-orange-600 hover:text-white text-sm bg-transparent hover:bg-orange-600 cursor-pointer"}
+                                className={"flex flex-row gap-1 items-center p-2 border border-orange-600 hover:shadow hover:shadow-orange-600 text-orange-600 hover:text-white text-md bg-transparent hover:bg-orange-600 cursor-pointer"}
                                 onClick={startShortBreak}>
                                 Pause
-                                <PauseIcon className="size-4"/>
+                                <PauseIcon className="size-5"/>
                             </span>
                         )
                         }
                         <span
-                            className={"flex flex-row gap-1 items-center p-2 border border-black text-black hover:text-white text-sm bg-transparent hover:bg-gray-600 cursor-pointer"}
+                            className={"flex flex-row gap-1 items-center p-2 border border-black text-black hover:text-white bg-transparent text-md hover:bg-gray-600 cursor-pointer"}
                             onClick={startLongBreak}>
                             Stop
-                            <StopIcon className="size-4"/>
+                            <StopIcon className="size-5"/>
                         </span>
                     </>
                 )}
-                <span
-                    className={"flex flex-row gap-1 items-center p-2 text-red-600 hover:text-white text-sm bg-transparent hover:bg-red-500 cursor-pointer"}
-                    onClick={onClickDelete}>
-                            <TrashIcon className="size-5"/>
+                    <span
+                        className={"flex flex-row gap-1 items-center p-2 text-red-600 hover:text-white bg-transparent hover:bg-red-500 cursor-pointer"}
+                        onClick={onClickDelete}>
+                            <TrashIcon className="size-6"/>
                         </span>
             </span>
-        </li>
+            </li>
+
+            <li
+                className={` sm:hidden bg-gray-50 text-lg p-3 flex flex-col gap-2 border hover:shadow ${task.isCompleted ? 'border-emerald-600 hover:shadow-emerald-600' : task.isShortBreak ? 'border-orange-600' : 'border-black'} ${task.isShortBreak ? 'animate-pulse' : ''} cursor-pointer text-black`}
+                onClick={() => onClick(task)}
+            >
+                <div className={"flex flex-row gap-3 items-center border-b border-gray-600 pb-2"}>
+                    <span className={"w-5 mt-1.5"}>
+                        {task.isCompleted ? (
+                            <input
+                                className="w-5 h-5 bg-emerald-600 border-2 border-emerald-600 hover:bg-white rounded-none appearance-none outline-none cursor-pointer relative"
+                                type="checkbox"
+                                checked={task.isCompleted}
+                                onChange={onClickStatus}
+                                onClick={(event) => event.stopPropagation()}
+                            />
+                        ) : (
+                            <input
+                                className="w-5 h-5 bg-white border-2 border-black hover:border-emerald-600 hover:bg-emerald-600 rounded-none appearance-none outline-none cursor-pointer relative"
+                                type="checkbox"
+                                checked={task.isCompleted}
+                                onChange={onClickStatus}
+                                onClick={(event) => event.stopPropagation()}
+                            />
+                        )}
+                    </span>
+
+                    <span className={`overflow-hidden text-overflow-ellipsis whitespace-nowrap`}>{task.name}</span>
+                </div>
+                <span className={`text-left`}>{formatTimeSpend(localTimeSpend)}</span>
+                <span className={"flex flex-row gap-2 items-center"}>
+                {!task.isCompleted && (
+                    <>
+                        {isBreak || !task.isTaskStarted ? (
+                            <span
+                                className={"flex flex-row gap-1 items-center p-2 border border-emerald-600 hover:shadow hover:shadow-emerald-600 text-emerald-600 hover:text-white bg-transparent hover:bg-emerald-600 cursor-pointer"}
+                                onClick={startTask}>
+                                Play
+                                <PlayIcon className="size-5"/>
+                            </span>
+
+                        ) : (
+                            <span
+                                className={"flex flex-row gap-1 items-center p-2 border border-orange-600 hover:shadow hover:shadow-orange-600 text-orange-600 hover:text-white bg-transparent hover:bg-orange-600 cursor-pointer"}
+                                onClick={startShortBreak}>
+                                Pause
+                                <PauseIcon className="size-5"/>
+                            </span>
+                        )
+                        }
+                        <span
+                            className={"flex flex-row gap-1 items-center p-2 border border-black text-black hover:text-white bg-transparent hover:bg-gray-600 cursor-pointer"}
+                            onClick={startLongBreak}>
+                            Stop
+                            <StopIcon className="size-5"/>
+                        </span>
+                    </>
+                )}
+                    <span
+                        className={"ml-auto items-center p-2 text-red-600 hover:text-white bg-transparent hover:bg-red-500 cursor-pointer"}
+                        onClick={onClickDelete}>
+                            <TrashIcon className="size-7"/>
+                        </span>
+            </span>
+            </li>
+        </>
     )
 }

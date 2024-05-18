@@ -1,9 +1,16 @@
 import { Button, Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react'
-import {useEffect, useRef} from 'react'
+import {useContext, useEffect, useRef} from 'react'
 import {TaskType} from "../types/Task.tsx";
+import {TasksContext} from "../tasksContext.tsx";
 
 export default function TaskLightbox({ isVisible, onClose, task }: { isVisible: boolean, onClose: () => void, task?: TaskType }) {
 
+    const { tasks, updateParentTask } = useContext(TasksContext)
+
+    const onChangeParentTask = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        if (!task) return
+        updateParentTask(task, Number(event.target.value))
+    }
 
     // Blur the background when the lightbox is open
     const appRoot = useRef(document.getElementById('root'))
@@ -67,9 +74,25 @@ export default function TaskLightbox({ isVisible, onClose, task }: { isVisible: 
                                             <span className={"font-bold"}>End Date Time:</span>
                                             <span>{endDateTimeFormatted()}</span>
                                         </li>
+                                        <li className={"flex flex-col gap-2 sm:flex-row sm:items-center"}>
+                                            <span className={"font-bold"}>Parent Task:</span>
+                                            <span>
+                                                <select
+                                                    className={"p-2 border border-black w-full"}
+                                                    value={task?.parentTask}
+                                                    onChange={onChangeParentTask}
+                                                >
+                                                    <option value={0}>None</option>
+                                                    {tasks.filter(t => t.id != task?.id).map(t => (
+                                                        <option key={t.id} value={t.id}>{t.name}</option>
+                                                    ))}
+                                                </select>
+                                            </span>
+                                        </li>
                                     </ul>
                                     <div className="flex justify-end gap-2 mt-4">
-                                        <Button className={"p-3 border border-black hover:bg-black hover:text-white"} onClick={onClose}>Close</Button>
+                                        <Button className={"p-3 border border-black hover:bg-black hover:text-white"}
+                                                onClick={onClose}>Close</Button>
                                     </div>
                                 </DialogPanel>
                             </TransitionChild>

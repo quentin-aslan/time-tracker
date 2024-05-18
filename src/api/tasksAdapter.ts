@@ -16,7 +16,8 @@ return fetchedTasks.map((task) => {
             endDateBreakTime: task.endDateBreakTime ?? 0,
             isTaskStarted: task.isTaskStarted ?? false,
             isShortBreak: task.isShortBreak ?? false,
-            isLongBreak: task.isLongBreak ?? false
+            isLongBreak: task.isLongBreak ?? false,
+            parentTask: task.parentTask ?? undefined
         }
     })
 }

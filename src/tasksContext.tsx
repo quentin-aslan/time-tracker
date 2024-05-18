@@ -20,7 +20,9 @@ export const TasksContext = React.createContext({
     // @ts-expect-error task is used.
     stopBreakTimer: (task: TaskType) => {},
     // @ts-expect-error task is used.
-    deleteTask: (task: TaskType) => {}
+    deleteTask: (task: TaskType) => {},
+    // @ts-expect-error task is used.
+    updateParentTask: (task: TaskType, parentId: number) => {}
 });
 
 const TasksProvider = ({ children }: { children: ReactNode }) => {
@@ -53,6 +55,17 @@ const TasksProvider = ({ children }: { children: ReactNode }) => {
             const taskIndex = tasks.findIndex(t => t.id === task.id)
             await apiUpdateTask(tasks[taskIndex])
             setTasks([...tasks])
+        } catch (error) {
+            alert('An error occurred while updating the task')
+        }
+    }
+
+    const updateParentTask = async (task: TaskType, parentId: number) => {
+        try {
+            const taskIndex = tasks.findIndex(t => t.id === task.id)
+            tasks[taskIndex].parentTask = parentId
+
+            updateTask(tasks[taskIndex])
         } catch (error) {
             alert('An error occurred while updating the task')
         }
@@ -176,7 +189,20 @@ const TasksProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     return (
-        <TasksContext.Provider value={{ tasks, addTask, setTasks, getTasksCompleted, getTasksInProgress, getTimeSpendInMs, startTaskTimer, startBreakTimer, updateStatusTask, stopBreakTimer, deleteTask }}>
+        <TasksContext.Provider value={{
+            tasks,
+            addTask,
+            setTasks,
+            getTasksCompleted,
+            getTasksInProgress,
+            getTimeSpendInMs,
+            startTaskTimer,
+            startBreakTimer,
+            updateStatusTask,
+            stopBreakTimer,
+            deleteTask,
+            updateParentTask
+        }}>
             {children}
         </TasksContext.Provider>
     );
