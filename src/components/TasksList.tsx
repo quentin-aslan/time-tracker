@@ -29,7 +29,7 @@ export default function TasksList() {
     const completedTasksListComponent = (
         <ul className={"flex flex-col gap-2"}>
             {getTasksCompleted().filter(task => !task.parentTask || task.parentTask === 0).map(task => {
-                const childs = getTasksInProgress().filter(t => t.parentTask === task.id)
+                const childs = [...getTasksInProgress().filter(t => t.parentTask === task.id), ...getTasksCompleted().filter(t => t.parentTask === task.id)]
                 if (childs.length > 0) {
                     return (
                         <TaskParentLine
@@ -56,7 +56,7 @@ export default function TasksList() {
     const inProgressTasksListComponent = (
         <ul className={"flex flex-col gap-2"}>
             {getTasksInProgress().filter(task => !task.parentTask || task.parentTask === 0).map(task => {
-                const childs = getTasksInProgress().filter(t => t.parentTask === task.id)
+                const childs = [...getTasksInProgress().filter(t => t.parentTask === task.id), ...getTasksCompleted().filter(t => t.parentTask === task.id)]
                 if (childs.length > 0) {
                     return (
                         <TaskParentLine
