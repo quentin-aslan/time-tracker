@@ -27,7 +27,7 @@ export default function TasksList() {
     }
 
     const completedTasksListComponent = (
-        <ul className={"flex flex-col gap-2"}>
+        <ul className={"flex flex-col gap-3"}>
             {getTasksCompleted().filter(task => !task.parentTask || task.parentTask === 0).map(task => {
                 const childs = [...getTasksInProgress().filter(t => t.parentTask === task.id), ...getTasksCompleted().filter(t => t.parentTask === task.id)]
                 if (childs.length > 0) {
@@ -54,7 +54,7 @@ export default function TasksList() {
     )
 
     const inProgressTasksListComponent = (
-        <ul className={"flex flex-col gap-2"}>
+        <ul className={"flex flex-col gap-3"}>
             {getTasksInProgress().filter(task => !task.parentTask || task.parentTask === 0).map(task => {
                 const childs = [...getTasksInProgress().filter(t => t.parentTask === task.id), ...getTasksCompleted().filter(t => t.parentTask === task.id)]
                 if (childs.length > 0) {
@@ -87,7 +87,7 @@ export default function TasksList() {
 
     return (
         <>
-            <div className={"flex flex-col gap-5 items-center"}>
+            <div className={"flex flex-col gap-2 items-center"}>
                 <h1 className={"text-3xl"}>Tasks</h1>
                 <form onSubmit={handleAddTask} className={"flex flex-row justify-center w-11/12 md:w-4/5 gap-5"}>
                     <input type="text" placeholder="Type here" className="p-3 border border-black w-full"
@@ -98,7 +98,7 @@ export default function TasksList() {
                     {inProgressTasksListComponent}
 
                     <div
-                        className={"flex flex-col gap-2 justify-between bg-emerald-100 border-2 border-emerald-600 text-lg p-3 hover:shadow-md hover:shadow-emerald-600 cursor-pointer"}
+                        className={"flex flex-col gap-2 justify-between bg-emerald-100 border-2 border-emerald-600 text-lg p-3 hover:shadow-custom-shadow hover:shadow-emerald-600 cursor-pointer"}
                         onClick={() => {
                             setIsCompletedTaskDisplayed(!isCompletedTaskDisplayed)
                             localStorage.setItem('isCompletedTaskDisplayed', JSON.stringify(!isCompletedTaskDisplayed))

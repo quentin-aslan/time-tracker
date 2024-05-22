@@ -34,7 +34,7 @@ const TasksProvider = ({ children }: { children: ReactNode }) => {
     const addTask = async (name: string) => {
         try {
             const task: TaskType = {
-                id: tasks.length + 1,
+                id: Date.now(),
                 name,
                 isCompleted: false,
                 isTaskStarted: false,

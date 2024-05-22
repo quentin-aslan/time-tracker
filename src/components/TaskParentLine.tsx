@@ -10,7 +10,7 @@ export default function TaskParentLine ({ childs, task, onClick }: { childs: Tas
     }, [])
 
     return (
-        <article className={"hover:shadow-custom-shadow hover:shadow-gray-400"}>
+        <article className={"hover:shadow-custom-shadow hover:-translate-y-1 hover:-translate-x-1"}>
             <TaskLine
                 key={task.id}
                 task={task}

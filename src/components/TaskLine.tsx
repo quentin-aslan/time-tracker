@@ -76,7 +76,7 @@ export default function TaskLine({ task, onClick, isParentTask }: {task: TaskTyp
         <>
             {/* DESKTOP */}
             <li
-                className={`hidden sm:flex flex-row gap-1 items-center justify-between bg-gray-50 p-3 border ${!isParentTask ? 'hover:shadow-custom-shadow' : ''}  ${task.isCompleted ? isParentTask ? 'border-emerald-600' : 'border-emerald-600 hover:shadow-emerald-600' : task.isShortBreak ? 'border-orange-600' : 'border-black'} text-lg ${task.isShortBreak ? 'animate-pulse' : ''} cursor-pointer text-black`}
+                className={`hidden sm:flex flex-row gap-1 items-center justify-between bg-gray-50 p-3 border ${!isParentTask ? 'hover:shadow-custom-shadow hover:-translate-y-1 hover:-translate-x-1' : ''}  ${task.isCompleted ? isParentTask ? 'border-emerald-600' : 'border-emerald-600 hover:shadow-emerald-600' : task.isShortBreak ? 'border-orange-600' : 'border-black'} text-lg ${task.isShortBreak ? 'animate-pulse' : ''} cursor-pointer text-black`}
                 onClick={() => onClick(task)}
             >
             <span className={"w-5 pt-0.5"}>
@@ -108,7 +108,7 @@ export default function TaskLine({ task, onClick, isParentTask }: {task: TaskTyp
                     <>
                         {isBreak || !task.isTaskStarted ? (
                             <span
-                                className={"flex flex-row gap-1 items-center p-2 border border-emerald-600 hover:shadow hover:shadow-emerald-600 text-emerald-600 hover:text-white text-md bg-transparent hover:bg-emerald-600 cursor-pointer"}
+                                className={"flex flex-row gap-1 items-center p-2 border border-emerald-600 text-emerald-600 hover:text-white text-md bg-transparent hover:bg-emerald-600 cursor-pointer"}
                                 onClick={startTask}>
                                 Play
                                 <PlayIcon className="size-5"/>
@@ -116,7 +116,7 @@ export default function TaskLine({ task, onClick, isParentTask }: {task: TaskTyp
 
                         ) : (
                             <span
-                                className={"flex flex-row gap-1 items-center p-2 border border-orange-600 hover:shadow hover:shadow-orange-600 text-orange-600 hover:text-white text-md bg-transparent hover:bg-orange-600 cursor-pointer"}
+                                className={"flex flex-row gap-1 items-center p-2 border border-orange-600 text-orange-600 hover:text-white text-md bg-transparent hover:bg-orange-600 cursor-pointer"}
                                 onClick={startShortBreak}>
                                 Pause
                                 <PauseIcon className="size-5"/>
@@ -141,7 +141,7 @@ export default function TaskLine({ task, onClick, isParentTask }: {task: TaskTyp
 
             {/* MOBILE */}
             <li
-                className={` sm:hidden bg-gray-50 text-lg p-3 flex flex-col gap-2 border hover:shadow ${!isParentTask ? 'hover:shadow-custom-shadow' : ''} ${task.isCompleted ? isParentTask ? 'border-emerald-600' : 'border-emerald-600 hover:shadow-emerald-600' : task.isShortBreak ? 'border-orange-600' : 'border-black'} ${task.isShortBreak ? 'animate-pulse' : ''} cursor-pointer text-black`}
+                className={`sm:hidden bg-gray-50 text-lg p-3 flex flex-col gap-2 border ${!isParentTask ? 'hover:shadow-custom-shadow hover:-translate-y-1 hover:-translate-x-1' : ''} ${task.isCompleted ? isParentTask ? 'border-emerald-600' : 'border-emerald-600 hover:shadow-emerald-600' : task.isShortBreak ? 'border-orange-600' : 'border-black'} ${task.isShortBreak ? 'animate-pulse' : ''} cursor-pointer text-black`}
                 onClick={() => onClick(task)}
             >
                 <div className={"flex flex-row gap-3 items-center border-b border-gray-600 pb-2"}>
