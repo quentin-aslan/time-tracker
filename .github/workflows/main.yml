@@ -30,7 +30,5 @@ jobs:
             touch .env
             echo VITE_SUPABASE_URL=${{ secrets.VITE_SUPABASE_URL }} >> .env
             echo VITE_SUPABASE_ANON_KEY=${{ secrets.VITE_SUPABASE_ANON_KEY }} >> .env
-            sudo docker stop time-tracker || true
-            sudo docker rm time-tracker || true
-            sudo docker build -t time-tracker .
-            sudo docker run -d -p 3050:3050 --name time-tracker --restart always time-tracker
+            npm install
+            npm run build
