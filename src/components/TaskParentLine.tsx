@@ -10,15 +10,16 @@ export default function TaskParentLine ({ childs, task, onClick }: { childs: Tas
     }, [])
 
     return (
-        <>
+        <article className={"hover:shadow-custom-shadow hover:-translate-y-1 hover:-translate-x-1"}>
             <TaskLine
                 key={task.id}
                 task={task}
                 onClick={() => onClick(task)}
+                isParentTask={true}
             />
             {childs.length > 0 && (
                 <div
-                    className={"flex flex-col gap-2 p-2 -mt-2 mb-2 border border-black border-t-0 bg-gray-200 hover:bg-gray-400 hover:text-white hover:shadow-md text-center cursor-pointer"}
+                    className={"flex flex-col gap-2 p-2 -mt-2 border border-black border-t-0 text-center cursor-pointer"}
                     onClick={() => {
                         localStorage.setItem(`task-${task.id}-isChildsDisplayed`, JSON.stringify(!isChildsDisplayed))
                         setIsChildsDisplayed(!isChildsDisplayed)
@@ -38,6 +39,6 @@ export default function TaskParentLine ({ childs, task, onClick }: { childs: Tas
                     )}
                 </div>
             )}
-        </>
+        </article>
     )
 }
