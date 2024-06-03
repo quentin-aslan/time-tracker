@@ -4,7 +4,7 @@
 
 @layer components {
   .btn {
-    @apply p-2 border border-black bg-gray-600 text-white hover:bg-transparent cursor-pointer;
+    @apply cursor-pointer border border-black bg-gray-600 p-2 text-white hover:bg-transparent;
   }
 
   .btn-outline {
@@ -14,5 +14,4 @@
   .btn-success-outline {
     @apply border-emerald-600 bg-transparent text-emerald-600 hover:bg-emerald-600 hover:text-white;
   }
-
 }

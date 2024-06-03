@@ -25,8 +25,11 @@ The time tracking logic is primarily handled in the `TaskLine` component and the
 The time tracking application uses Supabase for user authentication and data storage. The `useSupabase` hook provides access to the Supabase client and user session information. The `TasksContext` component uses the Supabase client to interact with the database.
 
 ### Get Data types with supabase CLI
+
 [Supabase Documentation](https://supabase.com/docs/guides/api/rest/generating-types)
+
 ```bash
 npx supabase login
 
 npx supabase gen types typescript --project-id "XXXX" --schema public > src/types/supabase.ts
+```
